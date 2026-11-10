@@ -6,6 +6,33 @@
 
 公式データ：https://data.gtdb.ecogenomic.org/releases/release232/232.0/genomic_files_reps/
 
+## 構築手順
+
+HGTFinderをインストールした環境で、リポジトリルートから実行します。
+
+```sh
+base=https://data.gtdb.ecogenomic.org/releases/release232/232.0
+mkdir -p inputs/gtdb-r232
+for file in bac120_metadata_r232.tsv.gz ar53_metadata_r232.tsv.gz \
+  bac120_taxonomy_r232.tsv.gz ar53_taxonomy_r232.tsv.gz MD5SUM.txt
+do
+  curl -fL "$base/$file" -o "inputs/gtdb-r232/$file" || break
+done
+```
+
+5ファイルの取得に成功したら、次を実行します。タンパク質アーカイブは構築中にストリーム取得されます。
+
+```sh
+python -m hgtfinder.full_db --config config/full_gtdb_r232.toml \
+  --metadata inputs/gtdb-r232/bac120_metadata_r232.tsv.gz inputs/gtdb-r232/ar53_metadata_r232.tsv.gz \
+  --taxonomy inputs/gtdb-r232/bac120_taxonomy_r232.tsv.gz inputs/gtdb-r232/ar53_taxonomy_r232.tsv.gz \
+  --md5sum inputs/gtdb-r232/MD5SUM.txt --diamond "$(command -v diamond)" \
+  --url "$base/genomic_files_reps/gtdb_proteins_aa_reps_r232.tar.gz" \
+  --out outputs/db-r232
+```
+
+構築後は、READMEの[使い方](../README.md#使い方)に従い、`outputs/db-r232` を `--db` に指定します。
+
 ## 実装
 
 `hgtfinder.full_db`はtaxonomy/metadataの公式MD5、代表ゲノム集合、ゲノムごとのタンパク質数、元アーカイブ全体のMD5を検証するストリーム構築を提供します。全FASTAや元巨大アーカイブの重複保存を避け、元protein IDは分割ごとの対応表に保持します。巨大アーカイブの取得には明示的なURL指定が必要です。

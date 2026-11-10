@@ -8,14 +8,33 @@ GTDB由来の全CDSタンパク質参照DBを用い、単一原核生物ゲノ�
 
 ## インストール
 
-リポジトリルートで実行します。DB・入力配列は同梱していません。
+### 1. HGTFinderとDIAMONDを入れる
+
+Python 3.11以上を使います。macOSでHomebrewを使う場合は `brew install diamond` でDIAMONDを導入できます。
 
 ```sh
-python -m venv .venv
+git clone https://github.com/leoken422/HGTFinder.git
+cd HGTFinder
+python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install .
 hgtfinder --help
+diamond version
 ```
+
+### 2. 参照DBを構築する
+
+用意した参照ゲノムで始める場合は、各ゲノムの全CDSタンパク質を一つの `reference.faa` にまとめます。FASTAの各ヘッダーの最初の空白までを一意なsubject IDにし、`reference_metadata.tsv` に同じIDを1件ずつ記録します。TSVの必須列は `subject_id`、`genome_id`、`gtdb_lineage` です。`genome_id` と系統分類は使用するGTDBリリースから取得してください。
+
+```sh
+hgtfinder prepare-db --reference reference.faa --metadata reference_metadata.tsv \
+  --release R232 --selection species_representatives --protein-scope all-cds \
+  --provenance '取得元、リリース、全CDS取得方法、チェックサム' --out outputs/db
+```
+
+例ではR232の種代表ゲノムを選んだ場合を示します。`--release`、`--selection`、`--provenance` は実際の参照データに合わせます。構築済みDBがあれば、そのディレクトリを解析時の `--db` に指定できます。
+
+LKSZ1事例と同じGTDB R232全種代表を使う場合は、[公式データの取得から分割DB構築までの手順](docs/FULL_GTDB.md#構築手順)を参照してください。LKSZ1事例のDB本体は約198.5 GiBで、構築には別途作業領域が必要です。
 
 ## 判定方法
 
@@ -52,32 +71,34 @@ hgtfinder debug-score --hits examples/debug_hits.tsv \
 
 q1は分子34、分母11、平均約3.091で基本判定は候補ですが、最良ヒットが同属なので最終判定は非候補です。期待出力は`examples/debug_expected.json`です。
 
-## 入力と実行
+## 使い方
 
-- query FASTA：重複しないquery ID、全アミノ酸配列。
-- query taxonomy TSV：`sample_id`, `genome_id`, `gtdb_release`, `gtdb_lineage`の単一サンプル行。genome_id不明なら空欄可ですが自己除外できません。
-- reference FASTA：一意なsubject ID、各ゲノムの全CDSタンパク質。
-- reference metadata TSV：`subject_id`, `genome_id`, `gtdb_lineage`。参照FASTAとID集合が完全一致する必要があります。
-- 任意の遺伝子注釈TSV：`query_id`とgene/product/座標など。
+### 1. 解析対象を用意する
 
-GTDB lineageはd__/p__/c__/o__/f__/g__/s__の7階級。空階級は接頭辞のみ。NCBI分類やGTDB-TkマーカーDBで代用しません。DB・queryのGTDB releaseは一致させます。
+- `query.faa` に対象ゲノムの全CDSアミノ酸配列を入れ、各FASTAのIDを一意にします。
+- `query_taxonomy.tsv` はヘッダーと1サンプル分の行を持つタブ区切りファイルです。列は `sample_id`、`genome_id`、`gtdb_release`、`gtdb_lineage` です。 `gtdb_release` はDBと一致させ、系統分類は `d__;p__;c__;o__;f__;g__;s__` の7階級を順に記載します。 `genome_id` が不明なら空欄にできますが、同一ゲノムのヒットをIDで除外できなくなります。[入力TSVの合成例](examples/query_taxonomy.tsv)
+- 遺伝子名や座標を出力に添える場合は、`query_id` 列を含む注釈TSVを用意し、`--genes genes.tsv` を追加します。
+
+### 2. 検索と判定を実行する
 
 ```sh
-hgtfinder prepare-db --reference reference.faa --metadata reference_metadata.tsv \
-  --release R232 --selection species_representatives --protein-scope all-cds \
-  --provenance '取得元、release、全CDS取得方法、チェックサム' --out outputs/db
-
 hgtfinder run --query query.faa --query-taxonomy query_taxonomy.tsv \
-  --db outputs/db --genes genes.tsv --out outputs/run
+  --db outputs/db --out outputs/run
 ```
 
-保存済み検索だけを再集計する場合：
+全種代表の分割DBを使う場合は `--db outputs/db-r232` に変更し、`hgtfinder --config config/full_gtdb_r232.toml run ...` のように設定ファイルを指定します。
+
+### 3. 結果を確認する
+
+`outputs/run/summary/summary.md` に判定件数がまとまります。遺伝子ごとの結果は `outputs/run/summary/genes.tsv` の `status` を確認してください。 `candidate` は候補、`non_candidate` は非候補、`pending` は判定保留です。 `genus_veto_applied` で、同属の最良ヒットを理由に候補から除外された行を確認できます。
+
+### 保存済み検索を再集計する
 
 ```sh
 hgtfinder summarize --query query.faa --query-taxonomy query_taxonomy.tsv \
   --db outputs/db --hits outputs/run/search/diamond.tsv \
   --search-manifest outputs/run/search/search_manifest.json \
-  --genes genes.tsv --out outputs/reclassified
+  --out outputs/reclassified
 ```
 
 出力先は新規または空のディレクトリが必要です。検索manifestを渡すことで入力・検索条件・検索結果の対応を検証します。外部ヒットをmanifestなしで読む場合は由来未検証フラグを付けます。
