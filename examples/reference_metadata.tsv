@@ -1,0 +1,16 @@
+subject_id	genome_id	gtdb_lineage
+s0	g0	d__Bacteria;p__P;c__C;o__O;f__F;g__G;s__G query
+s1	g1	d__Bacteria;p__P;c__C;o__O;f__F;g__G;s__Other1_6
+s2	g2	d__Bacteria;p__P;c__C;o__O;f__F;g__Other2_5;s__Other2_6
+s3	g3	d__Bacteria;p__P;c__C;o__O;f__Other3_4;g__Other3_5;s__Other3_6
+s4	g4	d__Bacteria;p__P;c__C;o__Other4_3;f__Other4_4;g__Other4_5;s__Other4_6
+s5	g5	d__Bacteria;p__P;c__Other5_2;o__Other5_3;f__Other5_4;g__Other5_5;s__Other5_6
+s6	g6	d__Bacteria;p__Other6_1;c__Other6_2;o__Other6_3;f__Other6_4;g__Other6_5;s__Other6_6
+s7	g7	d__Other7_0;p__Other7_1;c__Other7_2;o__Other7_3;f__Other7_4;g__Other7_5;s__Other7_6
+s8	g8	d__Bacteria;p__P;c__C;o__O;f__F;g__Other2_5;s__Other2_6
+s9	g9	d__Bacteria;p__P;c__C;o__O;f__F;g__Other2_5;s__Other2_6
+s10	g10	d__Bacteria;p__P;c__C;o__O;f__F;g__Other2_5;s__Other2_6
+self	query_genome	d__Bacteria;p__P;c__C;o__O;f__F;g__G;s__G query
+unknown	gu	d__Bacteria;p__P;c__C;o__O;f__F;g__G;s__
+paralog	g2	d__Bacteria;p__P;c__C;o__O;f__F;g__Other2_5;s__Other2_6
+low	gl	d__Bacteria;p__P;c__C;o__O;f__F;g__G;s__G query

@@ -1,0 +1,6 @@
+include README.md CHANGELOG.md CITATION.cff LICENSE
+recursive-include config *.toml
+recursive-include examples *.tsv *.faa *.json
+recursive-include docs *.md
+recursive-include tests *.py
+include scripts/debug_score.py

@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "Please cite the software version and the GTDB release used in your analysis."
+title: HGTFinder
+version: 0.1.0
+type: software
+authors:
+  - family-names: Okumura
+    given-names: Leonardo Ken
+repository-code: "https://github.com/leoken422/HGTFinder"
+url: "https://github.com/leoken422/HGTFinder"
+license: MIT
+abstract: "Exploratory GTDB-based protein taxonomy screening with a best-hit genus exclusion rule."

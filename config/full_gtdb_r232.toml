@@ -1,0 +1,27 @@
+[search]
+pool_size = 1000
+top_k = 100
+evalue = 1e-5
+query_coverage = 50.0
+subject_coverage = 50.0
+threads = 4
+sensitivity = "sensitive"
+block_size = 0.25
+index_chunks = 4
+
+[scoring]
+close_rank = "genus"
+minimum_hits = 10
+minimum_genomes = 5
+candidate_mean = 2.0
+exclude_best_hit_same_genus = true
+points = [0, 1, 2, 3, 4, 5, 6, 7]
+[full_db]
+release = "R232"
+archive_bytes = 131946537881
+chunk_mib = 64
+download_workers = 4
+shard_letters = 8000000000
+minimum_free_gib = 8
+working_allowance_gib = 20
+archive_urls = ["https://data.ace.uq.edu.au/public/gtdb/data/releases/release232/232.0/genomic_files_reps/gtdb_proteins_aa_reps_r232.tar.gz", "https://data.gtdb.ecogenomic.org/releases/release232/232.0/genomic_files_reps/gtdb_proteins_aa_reps_r232.tar.gz"]

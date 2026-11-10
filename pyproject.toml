@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hgtfinder"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Exploratory HGT screening using GTDB protein taxonomy and a best-hit genus filter"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [{name = "Leonardo Ken Okumura"}]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+[project.urls]
+Repository = "https://github.com/leoken422/HGTFinder"
+Issues = "https://github.com/leoken422/HGTFinder/issues"
+
+[project.scripts]
+hgtfinder = "hgtfinder.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+hgtfinder = ["v0.1.toml"]

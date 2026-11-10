@@ -1,0 +1,2 @@
+sample_id	genome_id	gtdb_release	gtdb_lineage
+synthetic	query_genome	fixture-not-real-GTDB	d__Bacteria;p__P;c__C;o__O;f__F;g__G;s__G query

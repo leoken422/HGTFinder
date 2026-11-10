@@ -1,0 +1,15 @@
+[search]
+pool_size = 1000
+top_k = 100
+evalue = 1e-5
+query_coverage = 50.0
+subject_coverage = 50.0
+threads = 4
+sensitivity = "sensitive"
+[scoring]
+close_rank = "genus"
+minimum_hits = 10
+minimum_genomes = 5
+candidate_mean = 2.0
+exclude_best_hit_same_genus = true
+points = [0, 1, 2, 3, 4, 5, 6, 7]
